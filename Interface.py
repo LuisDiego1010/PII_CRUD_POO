@@ -33,7 +33,7 @@ def main_window():
     background=Label(app, image=file_menu)
     background.place(x=0,y=0,relwidth=1,relheight=1)
 
-    app.master.title("Menu Window")
+    app.master.title("Main Menu")
     c.pack()
     app.mainloop()
 
@@ -48,8 +48,54 @@ def window_create():
     background=Label(app, image=file_menu)
     background.place(x=0,y=0,relwidth=1,relheight=1)
 
-    app.master.title("Menu Window")
+    app.master.title("Create Menu")
     c.pack()
     app.mainloop()
 
+window_create()
+
+def window_read():
+    root = Tk()
+    root.geometry("1200x700")
+    app = Application(master=root)
+    c=Canvas(app,bg="gray16",height=200,width=200)
+    file_menu=PhotoImage(file="resourses//images//menu_2.png")
+    background=Label(app, image=file_menu)
+    background.place(x=0,y=0,relwidth=1,relheight=1)
+
+    app.master.title("Read Menu")
+    c.pack()
+    app.mainloop()
+
+window_read()
+
+def window_update():
+    root = Tk()
+    root.geometry("1200x700")
+    app = Application(master=root)
+    c=Canvas(app,bg="gray16",height=200,width=200)
+    file_menu=PhotoImage(file="resourses//images//menu_2.png")
+    background=Label(app, image=file_menu)
+    background.place(x=0,y=0,relwidth=1,relheight=1)
+
+    app.master.title("Update Menu")
+    c.pack()
+    app.mainloop()
+
+window_update()
+
+def window_delete():
+    root = Tk()
+    root.geometry("1200x700")
+    app = Application(master=root)
+    c=Canvas(app,bg="gray16",height=200,width=200)
+    file_menu=PhotoImage(file="resourses//images//menu_2.png")
+    background=Label(app, image=file_menu)
+    background.place(x=0,y=0,relwidth=1,relheight=1)
+
+    app.master.title("Delete Menu")
+    c.pack()
+    app.mainloop()
+
+window_delete()
 
