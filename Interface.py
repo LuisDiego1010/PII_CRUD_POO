@@ -1,101 +1,53 @@
 from tkinter import *
-from turtle import back
+import tkinter as tk
 
-class Application(Frame):
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.master = master
-        self.pack(fill=BOTH, expand=YES)
+class Window(tk.Tk):
+    def __init__(self):
+        #Window Variables
+        super(Window,self).__init__()
+        self.geometry("1200x700")
+        self.file=PhotoImage(file="resourses//images//menu_2.png")
+        self.background=Label(self, image=self.file)
+        self.background.place(x=0,y=0,relwidth=1,relheight=1)
+        
         #self.create_widgets()
-
-    def create_widgets(self):
-        self.hi_there = Button(self)
-        self.hi_there["text"] = "Hello World\n(click me)"
-        self.hi_there["command"] = self.handler
-        self.hi_there.pack(side="top",padx=10, pady=10)
-        self.hi_there.config(bg='blue', fg='white',font=('times',10,'bold italic'))
-        self.hi_there.config(bd=10,relief=RAISED)
-        self.quit = Button(self, text="Finish",command=self.master.destroy)
-        self.quit.pack(side="bottom",fill=X, expand=YES)
-        self.quit.config(bd=10, relief=RAISED)
-        self.quit.config(bg='black',fg='yellow',font=('times',30,'bold normal'))
-
-    def handler(self):
-        print("Hola todos!")
 
 #FUNCIONES DE VENTANAS
 def main_window():
-    root = Tk()
-    root.geometry("1200x700")
-    app = Application(master=root)
-    c=Canvas(app,bg="gray16",height=200,width=200)
-    file_menu=PhotoImage(file="resourses//images//menu.png")
-    background=Label(app, image=file_menu)
-    background.place(x=0,y=0,relwidth=1,relheight=1)
-
-    app.master.title("Main Menu")
-    c.pack()
+    app = Window()
+    app.title("Menu")
+    app.file=PhotoImage(file="resourses//images//menu.png")
+    app.background=Label(app, image=app.file)
+    app.background.place(x=0,y=0,relwidth=1,relheight=1)
     app.mainloop()
 
 main_window()
 
 def window_create():
-    root = Tk()
-    root.geometry("1200x700")
-    app = Application(master=root)
-    c=Canvas(app,bg="gray16",height=200,width=200)
-    file_menu=PhotoImage(file="resourses//images//menu_2.png")
-    background=Label(app, image=file_menu)
-    background.place(x=0,y=0,relwidth=1,relheight=1)
+    app = Window()
+    app.title("Create Menu")
 
-    app.master.title("Create Menu")
-    c.pack()
     app.mainloop()
 
 window_create()
 
 def window_read():
-    root = Tk()
-    root.geometry("1200x700")
-    app = Application(master=root)
-    c=Canvas(app,bg="gray16",height=200,width=200)
-    file_menu=PhotoImage(file="resourses//images//menu_2.png")
-    background=Label(app, image=file_menu)
-    background.place(x=0,y=0,relwidth=1,relheight=1)
-
-    app.master.title("Read Menu")
-    c.pack()
+    app = Window()
+    app.title("Read Menu")
     app.mainloop()
-
-window_read()
+#window_read()
 
 def window_update():
-    root = Tk()
-    root.geometry("1200x700")
-    app = Application(master=root)
-    c=Canvas(app,bg="gray16",height=200,width=200)
-    file_menu=PhotoImage(file="resourses//images//menu_2.png")
-    background=Label(app, image=file_menu)
-    background.place(x=0,y=0,relwidth=1,relheight=1)
-
-    app.master.title("Update Menu")
-    c.pack()
+    app = Window()
+    app.title("Update Menu")
     app.mainloop()
 
-window_update()
+#window_update()
 
 def window_delete():
-    root = Tk()
-    root.geometry("1200x700")
-    app = Application(master=root)
-    c=Canvas(app,bg="gray16",height=200,width=200)
-    file_menu=PhotoImage(file="resourses//images//menu_2.png")
-    background=Label(app, image=file_menu)
-    background.place(x=0,y=0,relwidth=1,relheight=1)
-
-    app.master.title("Delete Menu")
-    c.pack()
+    app = Window()
+    app.title("Delete Menu")
     app.mainloop()
 
-window_delete()
+#window_delete()
 
