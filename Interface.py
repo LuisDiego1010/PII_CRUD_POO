@@ -1,15 +1,41 @@
 from tkinter import *
 import tkinter as tk
+import shelve
+from turtle import bgcolor
+archive = "students_base"
+
+class Student():
+    carnet=0
+    name=""
+    direction=""
+    telephone=0
+    email=""
+    cursos={}
+    
+    def Create_app(self):
+        create_window=Window()
+        create_window.title("App create")
+        title = Label (create_window,text="Favor llene los espacios con la información solicitada:", font=("Adobe Gothic Std B",24),background="white").place(x=200,y=15)
+        lbl_carnet = Label (create_window,text="Digite el carnet del estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=75)
+        lbl_curso = Label (create_window,text="Digite el curso que desea agregar al estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=135)
+        lbl_name = Label (create_window,text="Digite el nombre del estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=195)
+        lbl_direction = Label (create_window,text="Digite la dirección del estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=255)
+        lbl_telephone = Label (create_window,text="Digite el telefono del estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=315)
+        lbl_email = Label (create_window,text="Digite el email del estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=375)
+        create_window.mainloop()
+
 
 class Window(tk.Tk):
+    #Constructor of class Window
     def __init__(self):
-        #Window Variables
+        #Atributes of class Window
         super(Window,self).__init__()
         self.geometry("1200x700")
         self.file=PhotoImage(file="resourses//images//menu_2.png",master=self)
         self.background=Label(self, image=self.file)
         self.background.place(x=0,y=0,relwidth=1,relheight=1)
-
+        
+    #Methods of class Window
     def Create_menu(self):
         self = Window()
         self.title("Create Menu")
@@ -80,8 +106,6 @@ class Window(tk.Tk):
         self.btn_exit.place(x=1000, y=530)
         self.mainloop()
     
-
-
 #WINDOWS
 def main_window():
     app = Window()
@@ -93,3 +117,6 @@ def main_window():
     app.mainloop()
 
 main_window()
+
+s1=Student()
+s1.Create_app()
