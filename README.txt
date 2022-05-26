@@ -1,0 +1,2 @@
+Ejecución:
+Abra el archivo .py que se encuentra en la carpeta y asegúrese que la carpeta "resourses" se encuentre dentro de la carpeta, la misma contiene los recursos para interactuar con la interfaz gráfica

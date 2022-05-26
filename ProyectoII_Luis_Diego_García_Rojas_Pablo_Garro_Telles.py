@@ -4,10 +4,12 @@
 #Estudiantes: Luis Diego García  2020124283
 #             Pablo Garro Telles 2022150932
 #--------------------------------------------
-#Interfaz tkinter para administrar una base de datos en la cuál se almacena
-#la información personal de cada estudiante, entre ellos se encuentra el nombre, su dirección,
-#y los cursos matriculados especifcamente, y las notas de estos. 
-import re
+# Programa  para administrar una base de datos en la cuál se almacena
+# la información personal de cada estudiante, entre ellos se encuentra el nombre, su dirección,
+# y los cursos matriculados especifcamente, y las notas de estos, además cuenta con una interfaz
+# realizada con el módulo tkinter para el fácil acceso a datos y realizar las consultas pertinentes. 
+
+from operator import length_hint
 from tkinter import *
 import tkinter as tk
 import shelve #Toda la información se almacena en un archivo shelve.
@@ -15,7 +17,7 @@ from tkinter import messagebox
 
 #Clase para almacenar toda la información de cada estudiante
 class Student():
-    def __init__(self)->None: #Se crea un nuevo objeto, ya que esta diseñado orientado a objetos, con la información que corresponde.
+    def __init__(self)->None: #Se realiza el constructor de la clase con la información que corresponde a cada estudiante.
         #Aquí se definen los atributos, en los cuales se puede accesar para hacer actualizaciones o añadir información de acuerdo a lo que se solicitó.
         self.carnet=0    
         self.course={}
@@ -24,50 +26,65 @@ class Student():
         self.telephone=0
         self.email=""
 
-
+    #Métodos de clase para acceder a los datos
+    # @parametros carnet del estudiante
     def set_carnet(self,carnet):
         self.carnet=carnet
-    
+
+    # @return carnet del estudiante
     def get_carnet(self):
         return self.carnet
-        
+
+    # @parametros curso del estudiante
     def set_course(self,course):
         self.course={course:0}
-    
+
+    # @return curso del estudiante
     def get_course(self):
         return self.course
 
+    # @parametros nombre del estudiante
     def set_name(self,name):
         self.name=name
-    
+
+    # @return nombre del estudiante
     def get_name(self):
         return self.name
-
+    
+    # @parametros la dirección del estudiante
     def set_direction(self,direction):
         self.direction=direction
     
+    # @return la dirección del estudiante
     def get_direction(self):
         return self.direction
-        
+
+    # @parametros el # de telefono del estudiante
     def set_telephone(self,telephone):
         self.telephone=telephone
     
+    # @return el # de telefono del estudiante
     def get_telephone(self):
         return self.telephone
 
+    # @parametros el email del estudiante
     def set_email(self,email):
         self.email=email
     
+    # @return el email del estudiante
     def get_email(self):
         return self.email
 
     def get_information(self):
         return [self.carnet,self.name,self.course,self.direction,self.telephone,self.email] 
 
+#Clase para almacenar toda la información de el conjunto de estudiantes, además de contener los métodos para acceder a dicha informaciÓN
 class Data_Base():
+    #Constructor de clase que contiene el nombre del archivo
     def __init__(self)->None:
         self.archive = "students_base" #Se almacenan los datos en un archivo shelve, con el nombre "students_base"
 
+    #Comprueba si el archivo contiene datos
     def busy(self):
         with shelve.open(self.archive, writeback=True) as students:
             if len(students)>0:
@@ -75,6 +92,9 @@ class Data_Base():
             else: 
                 return False
     
+    # Busca un carnet dentro del archivo
+    # @parametros carnet del estudiante
+    # @return boolean
     def found_carnet(self,carnet): #Se busca que el estudiante exissta en la lista de carnets, por medio del número individual de este.
         with shelve.open(self.archive, writeback=True) as students:
             if str(carnet) in students:
@@ -82,18 +102,24 @@ class Data_Base():
             else: 
                 return False
     
+    # Busca un curso en específico dentro del archivo
+    # @parametros carnet,curso del estudiante
+    # @return boolean
     def found_course(self,carnet,course):#Aquí se buscan en la lista "Cursos" los cursos matriculados por cada estudiante.
         with shelve.open(self.archive, writeback=True) as students:
             if str(course) in (students[str(carnet)]["Cursos"]):
                 return True
             else:
                 False
-            
+
+    #Agrega un cursos a un estudiante específico dentro del archivo
+    # @parametros carnet,curso del estudiante        
     def add_course(self,carnet,course): #Aquí se añaden los cursos a la lista de cada uno de los estudiantes de acuerdo con su carnet
         with shelve.open(self.archive, writeback=True) as students:
             course_temp=students[carnet]["Cursos"][course]=0
-            print(course_temp)
 
+    #Asigna la información al archivo de un estudiante en específico 
+    # @parametros list con la información del estudiante     
     def set_information(self,students_list): #Se muestran los cursos del estudiante, consultado previamente en la lista de estudiantes, y 
         # esta se retorna de una forma más facil de presentar.
         with shelve.open(self.archive, writeback=True) as students:
@@ -104,9 +130,10 @@ class Data_Base():
             telephone=students_list[4]
             email=students_list[5]
             students[carnet]= {"Nombre":name,"Cursos":courses,"Direccion":direction,"Telefono":telephone,"Email":email}
-            print(students)
         students.close()
     
+    #Obtiene la informacion de los estudiantes que se encuentran agregados en el archivo
+    #@return string text con la información de los estudiantes
     def get_students(self):
         text = ""
         with shelve.open(self.archive, writeback=True) as students:
@@ -118,6 +145,9 @@ class Data_Base():
         students.close()
         return text
     
+    #Obtiene la informacion de un estudiante en específico
+    #@parametros carnet del estudiante
+    #@return string text con la información del estudiante
     def get_student(self,carnet): #Se muestra en general la información anteriormente registrada del estudiante de acuerdo con la busqueda por su número de  carnet.
         with shelve.open(self.archive, writeback=True) as students:
             text=""
@@ -128,31 +158,34 @@ class Data_Base():
                         text += str(f) + ":" + str(z) + "\n"
         students.close()
         return text
-
+    
+    #Obtiene la informacion de los cursos de la un estudiante en específico
+    #@parametros carnet del estudiante
+    #@return string text con la información de los cursos del estudiante
     def get_courses(self,carnet): #Aquí se muestran los cursos respectivos de cada estudiante de acuerdo con su número de carnet
         with shelve.open(self.archive, writeback=True) as students:
             characters="{}"
             text=" "
             for i,j in students.items():
                 if i == str(carnet):
-                    print("Los cursos de",i, "son: ")
                     conversion=str(j["Cursos"])
                     for x in range(len(characters)):
                         conversion = conversion.replace(characters[x],"")
                     text += "Los cursos de " + i + " son: \n"+conversion.replace(",","\n")
         students.close()
         return text            
-    
+     
+    #Cambia la información al archivo de un estudiante en específico  
+    #@parametros carnet,name,direction,telephone,email del estudiante
+    #@return string text con la información de los cursos del estudiante    
     def change_information(self,carnet,name,direction,telephone,email): 
         #Aquí se almacenan los datos en el formato shelve de cada estudiante, para así después si se requiere poder
         # agregar, modificar o consultar el nombre de un estudiante especifícamente.
         with shelve.open(self.archive, writeback=True) as students:
             if len(name)!=0:
-                print("ACTUALIZADO EL NOMBRE")
                 for i,j in students.items():
                     if i == str(carnet):
                         j["Nombre"]=name
-                        print("ACTUALIZADO EL NOMBRE")
 
             if len(direction)!=0:
                 for i,j in students.items():
@@ -169,6 +202,8 @@ class Data_Base():
                     if i == str(carnet):
                         j["Email"]=email
 
+    #Cambia la nota de un curso para un estudiante en específico
+    # @parametros carnet,curso,nueva calificacion 
     def set_calification(self,carnet,course,new_calification): #Se permite asignar a cada estudiante la calificación de cada curso, previamente consultado.
         with shelve.open(self.archive, writeback=True) as students:
             if str(course) in (students[str(carnet)]["Cursos"]):
@@ -176,21 +211,26 @@ class Data_Base():
                     for k,l in j["Cursos"].items():
                         if i==str(carnet) and k == str(course):
                             j["Cursos"][k] = new_calification #Se le asigna en la lista nueva "new_calification"
-        
+    
+    #Elimina un estudiante del archivo
+    #@parametros carnet de estudiante que desea eliminar
     def delete_student(self, carnet): #Se elimina la información de un estudiante el cual perdió el curso o simplemente lo retiro, etc...
         with shelve.open(self.archive, writeback=True) as students:
             del students[str(carnet)]
-        
+
+    #Elimina un curso específico para un estudiante en específico    
+    #@parametros carnet,curso del estudiante que desea eliminar
     def delete_course(self, carnet,course): #Por medio del carnet se busca el estudiante el cuál se quiere  eliminar un curso.
         with shelve.open(self.archive, writeback=True) as students:
             del (students[str(carnet)]["Cursos"][course])
+
 #Nueva clase que contiene la interfaz gráfica.
 #Se utilizó una carpeta externa en la cual se contiene los recursos utilizados para dicha interfaz gráfica, por ejemplo las photoimage, el rastreo "resourses//images//nombre de la imagen.png"
 #Ademas de eso se utilo la fuente de texto "Adobe Gothic Std B" con distintos tipo de tamaño y recursos visuales solo por tema estético de la interfaz
 class App(tk.Tk):
     #Se construye la clase para la app de formato tkinter
     def __init__(self):
-        #Se le agregan atributos a cada clase
+        #Se le agregan atributos a cada clase para la construcción de la ventana predeterminada
         super(App,self).__init__()
         self.geometry("1200x700")
         self.file=PhotoImage(file="resourses//images//menu_2.png",master=self)
@@ -269,18 +309,30 @@ class App(tk.Tk):
         lbl_email = Label (self,text="Digite el email del estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=375)
         ent_email= Entry(self,font=("Adobe Gothic Std B",16),width=35)
         ent_email.place(x=364,y=375)
+        lbl_message = Label (self,text="Nota: Para agregar más cursos al estudiante, diríjase a la opción new course en el menú de create ", font=("Adobe Gothic Std B",12),background="red").place(x=50,y=650)
 
         #Guardado de la información del estudiante.
         def save():
-            self.student.set_carnet(ent_carnet.get())
-            self.student.set_course(ent_course.get())
-            self.student.set_name(ent_name.get())
-            self.student.set_direction(ent_direction.get())
-            self.student.set_telephone(ent_telephone.get())
-            self.student.set_email(ent_email.get())
-            self.db.set_information(self.student.get_information())
+            if len(ent_carnet.get())!=0 and len(ent_course.get())!=0 and len(ent_direction.get())!=0 and len(ent_telephone.get())!=0 and len(ent_email.get())!=0:
+                if len(ent_carnet.get()) !=10:
+                    messagebox.showerror(title="Error", message="El carnet debe contener 10 espacios") #Mensaje de error
+                if len(ent_course.get()) !=6:
+                    messagebox.showerror(title="Error", message="El curso debe contener 6 espacios") #Mensaje de error
+                else:
+                    self.student.set_carnet(ent_carnet.get())
+                    self.student.set_course(ent_course.get())
+                    self.student.set_name(ent_name.get())
+                    self.student.set_direction(ent_direction.get())
+                    self.student.set_telephone(ent_telephone.get())
+                    self.student.set_email(ent_email.get())
+                    self.db.set_information(self.student.get_information())
+                    messagebox.showinfo(title="Éxito", message="El estudiante " + str(ent_carnet.get()) + " fue agregado correctamente") #Mensaje de que el estudiante ha sido cargado a la base de datos
+            else:
+                messagebox.showerror(title="Error", message="Favor llene todos los espacios") #Mensaje de error
+            
+        save = Button(self,text="GUARDAR",font=('Arial 20'),command=save).place(x=900,y=500) #Botón de guardar a la hora de digitar la información y poder guardarla en la base datos
 
-        save = Button(self,text="GUARDAR",font=('Arial 20'),command=save).place(x=100,y=500) #Botón de guardar a la hora de digitar la información y poder guardarla en la base datos
+            
         self.mainloop()
 
     def Create_course_app(self): #Esta es la ventana de la creación de un curso para un estudiante.
@@ -297,13 +349,13 @@ class App(tk.Tk):
                 ent_course.place(x=535,y=135)
                 def found_course():
                     if self.db.found_course(ent_carnet.get(),ent_course.get()):
-                        messagebox.showinfo(title="Error", message="El curso ya se encuentra en la base de datos " + " del estudiante " + ent_carnet.get()) #Mensaje de que su curso ya había sido agregrado anteriormente
+                        messagebox.showinfo(title="Revise los datos ingresados", message="El curso ya se encuentra en la base de datos " + " del estudiante " + ent_carnet.get()) #Mensaje de que su curso ya había sido agregrado anteriormente
                     else:
                         self.db.add_course(ent_carnet.get(),ent_course.get())
                         messagebox.showinfo(title="Éxito", message="El curso " + str(ent_course.get()) + " fue agregado correctamente" + "al estudiante " + str(ent_carnet.get())) #Mensaje de que su curso ha sido cargado a la base de datos
                 found_course = Button(self,text="AGREGAR",height=1,width=12,font=('Arial 9'),command=found_course).place(x=970,y=137) #Las imagenes son botones.
             else:
-                messagebox.showinfo(title="Error", message="El carnet "+ent_carnet.get() + " no se encuentra en la base de datos ") #Sino esta el carnet en la base datos.
+                messagebox.showerror(title="Error", message="El carnet "+ent_carnet.get() + " no se encuentra en la base de datos ") #Sino esta el carnet en la base datos.
                 
         found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=810,y=78) #Botón de buscar
 
@@ -337,7 +389,7 @@ class App(tk.Tk):
                 long_text = str(self.db.get_student(ent_carnet.get()))
                 text_student.insert(tk.END, long_text)
             else:
-                messagebox.showinfo(title="Error", message="El carnet "+ ent_carnet.get() + " no se encuentra en la base de datos ")#Sino esta el carnet en la base datos.
+                messagebox.showerror(title="Error", message="El carnet "+ ent_carnet.get() + " no se encuentra en la base de datos ")#Sino esta el carnet en la base datos.
         found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=800,y=75)
 
     def Read_courses_app(self):#Ventana que se puede leer los cursos registrados de un estudiante.
@@ -356,7 +408,7 @@ class App(tk.Tk):
                 long_text = str(self.db.get_courses(ent_carnet.get()))
                 text_student.insert(tk.END, long_text)
             else:
-                messagebox.showinfo(title="Error", message="El carnet "+ ent_carnet.get() + " no se encuentra en la base de datos ") #Sino esta el carnet en la base datos.
+                messagebox.showerror(title="Error", message="El carnet "+ ent_carnet.get() + " no se encuentra en la base de datos ") #Sino esta el carnet en la base datos.
         found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=800,y=75)
     
     def Update_information_app(self): #Ventana para actualización de un estudiante
@@ -385,7 +437,7 @@ class App(tk.Tk):
                     messagebox.showinfo(title="Éxito", message="La informacion del estudiante "+ent_carnet.get() + " fue actualizada ")
                 set_information = Button(self,text="ACTUALIZAR",height=1,width=12,font=('Arial 9'),command=set_information).place(x=760,y=450) #Una vez ya agregada la información se actualiza dandole al botón
             else:
-                messagebox.showinfo(title="Error", message="El carnet "+ ent_carnet.get() + " no se encuentra en la base de datos ")#Sino esta el carnet en la base datos.
+                messagebox.showerror(title="Error", message="El carnet "+ ent_carnet.get() + " no se encuentra en la base de datos ")#Sino esta el carnet en la base datos.
         found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=950,y=77)
 
     
@@ -412,10 +464,10 @@ class App(tk.Tk):
                         messagebox.showinfo(title="Éxito", message="La nota del curso "+ent_course.get() + " fue actualizada ") #Nota guardada con éxito.
 
                     else:
-                        messagebox.showinfo(title="Error", message="El curso " + str(ent_course.get()) + " no se encuentra agregado al estudiante " + str(ent_carnet.get())) #Sino esta el carnet en la base datos.
+                        messagebox.showerror(title="Error", message="El curso " + str(ent_course.get()) + " no se encuentra agregado al estudiante " + str(ent_carnet.get())) #Sino esta el carnet en la base datos.
                 found_course = Button(self,text="BUSCAR CURSO",height=1,width=12,font=('Arial 9'),command=found_course).place(x=970,y=137)
             else:
-                messagebox.showinfo(title="Error", message="El carnet "+ent_carnet.get() + " no se encuentra en la base de datos ")
+                messagebox.showerror(title="Error", message="El carnet "+ent_carnet.get() + " no se encuentra en la base de datos ")
                 
         found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=880,y=78)
 
@@ -432,7 +484,7 @@ class App(tk.Tk):
                 messagebox.showinfo(title="Éxito", message="El estudiante con carnet "+ ent_carnet.get() + " ha sido eliminado ")
             else:
                 messagebox.showerror(title="Error", message="El carnet "+ ent_carnet.get() + " no se encuentra en la base de datos ") #Sino esta el carnet en la base datos.
-        found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=800,y=75)
+        found = Button(self,text="ELIMINAR",height=1,width=10,font=('Arial 9'),command=found).place(x=800,y=75)
 
     def Delete_course(self): #Ventana para elimar un curso a un estudiante
         self=App()
@@ -440,25 +492,25 @@ class App(tk.Tk):
         title = Label (self,text="Llene los espacios con la información solicitada", font=("Adobe Gothic Std B",24),background="white").place(x=10,y=3)
         lbl_carnet = Label (self,text="Digite el carnet del estudiante al que desea eliminarle el curso: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=75)#Busqueda del estudiante por su número de carnet
         ent_carnet= Entry(self,font=("Adobe Gothic Std B",16),width=15)
-        ent_carnet.place(x=680,y=75)
+        ent_carnet.place(x=685,y=75)
         
         def found():
             if  self.db.found_carnet(ent_carnet.get()):   
                 lbl_course = Label (self,text="Digite el curso que desea eliminar: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=135) #Se le solicita el curso que desea eliminar
                 ent_course= Entry(self,font=("Adobe Gothic Std B",16),width=35)
-                ent_course.place(x=535,y=135)
+                ent_course.place(x=420,y=135)
                 def found_course():
                     if self.db.found_course(ent_carnet.get(),ent_course.get()):
                         self.db.delete_course(ent_carnet.get(),ent_course.get())
                         messagebox.showinfo(title="Éxito", message="El curso "+ent_course.get() + " ha sido eliminado ")
                     else:
                         messagebox.showerror(title="Error", message="El curso " + str(ent_course.get()) + " no se encuentra agregado al estudiante " + str(ent_carnet.get())) #Mensaje si el curso no esta agregado al estudiante
-                found_course = Button(self,text="BUSCAR CURSO",height=1,width=12,font=('Arial 9'),command=found_course).place(x=970,y=137)
+                found_course = Button(self,text="ELIMINAR CURSO",height=1,width=15,font=('Arial 9'),command=found_course).place(x=850,y=137)
             else:
                 messagebox.showerror(title="Error", message="El carnet "+ent_carnet.get() + " no se encuentra en la base de datos ") #Sino esta el carnet en la base datos.
                 
         found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=880,y=78)
-
+    # Menú principal que conectada con los métodos anteriores
     def Principal_Menu(self): #Ventana con los recursos correspondientes para el menú principal
         #Botón de creacion
         self.file_create=PhotoImage(file="resourses//images//btn_create.png",master=self)
