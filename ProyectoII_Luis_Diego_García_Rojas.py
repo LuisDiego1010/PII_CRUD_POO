@@ -132,13 +132,8 @@ class Data_Base():
         students.close()
         return text            
     
-    def set_information(self,carnet,name,direction,telephone,email):
+    def change_information(self,carnet,name,direction,telephone,email):
         with shelve.open(self.archive, writeback=True) as students:
-            print(len(name))
-            print(len(direction))
-            print(len(telephone))
-            print(len(email))
-
             if len(name)!=0:
                 print("ACTUALIZADO EL NOMBRE")
                 for i,j in students.items():
@@ -260,6 +255,7 @@ class App(tk.Tk):
         ent_email= Entry(self,font=("Adobe Gothic Std B",16),width=35)
         ent_email.place(x=364,y=375)
 
+        #ERROR EN EL SAVE
         def save():
             self.student.set_carnet(ent_carnet.get())
             self.student.set_course(ent_course.get())
@@ -371,7 +367,7 @@ class App(tk.Tk):
                 ent_email= Entry(self,font=("Adobe Gothic Std B",16),width=35)
                 ent_email.place(x=364,y=375)
                 def set_information():
-                    self.db.set_information(ent_carnet.get(),ent_name.get(),ent_direction.get(),ent_telephone.get(),ent_email.get())
+                    self.db.change_information(ent_carnet.get(),ent_name.get(),ent_direction.get(),ent_telephone.get(),ent_email.get())
                     messagebox.showinfo(title="Éxito", message="La informacion del estudiante "+ent_carnet.get() + " fue actualizada ")
                 set_information = Button(self,text="ACTUALIZAR",height=1,width=12,font=('Arial 9'),command=set_information).place(x=760,y=450)
             else:
@@ -428,13 +424,13 @@ class App(tk.Tk):
         self=App()
         self.title("App Delete Course")
         title = Label (self,text="Llene los espacios con la información solicitada", font=("Adobe Gothic Std B",24),background="white").place(x=10,y=3)
-        lbl_carnet = Label (self,text="Digite el carnet del estudiante al que desea cambiarle la nota: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=75)
+        lbl_carnet = Label (self,text="Digite el carnet del estudiante al que desea eliminarle el curso: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=75)
         ent_carnet= Entry(self,font=("Adobe Gothic Std B",16),width=15)
         ent_carnet.place(x=680,y=75)
         
         def found():
             if  self.db.found_carnet(ent_carnet.get()):   
-                lbl_course = Label (self,text="Digite el curso que desea agregar al estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=135)
+                lbl_course = Label (self,text="Digite el curso que desea eliminar: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=135)
                 ent_course= Entry(self,font=("Adobe Gothic Std B",16),width=35)
                 ent_course.place(x=535,y=135)
                 def found_course():
