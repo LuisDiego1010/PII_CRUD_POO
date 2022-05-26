@@ -168,8 +168,14 @@ class Data_Base():
                     for k,l in j["Cursos"].items():
                         if i==str(carnet) and k == str(course):
                             j["Cursos"][k] = new_calification
-
-
+        
+    def delete_student(self, carnet):
+        with shelve.open(self.archive, writeback=True) as students:
+            del students[str(carnet)]
+        
+    def delete_course(self, carnet,course):
+        with shelve.open(self.archive, writeback=True) as students:
+            del (students[str(carnet)]["Cursos"][course])
 
 class App(tk.Tk):
     #Constructor of class App
@@ -406,17 +412,42 @@ class App(tk.Tk):
     def Delete_student(self):
         self=App()
         self.title("App Delete Student")
-        lbl_carnet = Label (self,text="Digite el carnet del estudiante al que desea eliminar: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=75)
-        ent_carnet= Entry(self,font=("Adobe Gothic Std B",16),width=35).place(x=540,y=75)
+        title = Label (self,text="Favor ingrese el carnet del estudiante del que desea ver la información", font=("Adobe Gothic Std B",24),background="white").place(x=10,y=3)
+        lbl_carnet = Label (self,text="Digite el carnet del estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=75)
+        ent_carnet= Entry(self,font=("Adobe Gothic Std B",16),width=35)
+        ent_carnet.place(x=370,y=75)
+        def found():
+            if  self.db.found_carnet(ent_carnet.get()):
+                self.db.delete_student(ent_carnet.get())
+                messagebox.showinfo(title="Éxito", message="El estudiante con carnet "+ ent_carnet.get() + " ha sido eliminado ")
+            else:
+                messagebox.showerror(title="Error", message="El carnet "+ ent_carnet.get() + " no se encuentra en la base de datos ")
+        found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=800,y=75)
 
     def Delete_course(self):
         self=App()
         self.title("App Delete Course")
         title = Label (self,text="Llene los espacios con la información solicitada", font=("Adobe Gothic Std B",24),background="white").place(x=10,y=3)
-        lbl_carnet = Label (self,text="Digite el carnet del estudiante al que desea eliminar un curso: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=75)
-        ent_carnet= Entry(self,font=("Adobe Gothic Std B",16),width=35).place(x=650,y=75)
-        lbl_course = Label (self,text="Digite el curso del estudiante que desea eliminar: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=195)
-        ent_course = Entry(self,font=("Adobe Gothic Std B",16),width=35).place(x=530,y=195)
+        lbl_carnet = Label (self,text="Digite el carnet del estudiante al que desea cambiarle la nota: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=75)
+        ent_carnet= Entry(self,font=("Adobe Gothic Std B",16),width=15)
+        ent_carnet.place(x=680,y=75)
+        
+        def found():
+            if  self.db.found_carnet(ent_carnet.get()):   
+                lbl_course = Label (self,text="Digite el curso que desea agregar al estudiante: ", font=("Adobe Gothic Std B",16),background="white").place(x=50,y=135)
+                ent_course= Entry(self,font=("Adobe Gothic Std B",16),width=35)
+                ent_course.place(x=535,y=135)
+                def found_course():
+                    if self.db.found_course(ent_carnet.get(),ent_course.get()):
+                        self.db.delete_course(ent_carnet.get(),ent_course.get())
+                        messagebox.showinfo(title="Éxito", message="El curso "+ent_course.get() + " ha sido eliminado ")
+                    else:
+                        messagebox.showerror(title="Error", message="El curso " + str(ent_course.get()) + " no se encuentra agregado al estudiante " + str(ent_carnet.get()))
+                found_course = Button(self,text="BUSCAR CURSO",height=1,width=12,font=('Arial 9'),command=found_course).place(x=970,y=137)
+            else:
+                messagebox.showerror(title="Error", message="El carnet "+ent_carnet.get() + " no se encuentra en la base de datos ")
+                
+        found = Button(self,text="BUSCAR",height=1,width=10,font=('Arial 9'),command=found).place(x=880,y=78)
 
     def Principal_Menu(self):
         #Create button
